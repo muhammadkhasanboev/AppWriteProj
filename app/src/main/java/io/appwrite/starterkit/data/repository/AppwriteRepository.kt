@@ -2,14 +2,13 @@ package io.appwrite.starterkit.data.repository
 
 import android.content.Context
 import io.appwrite.Client
+import io.appwrite.exceptions.AppwriteException
 import io.appwrite.services.Account
 import io.appwrite.services.Databases
+import io.appwrite.starterkit.constants.AppwriteConfig
 import io.appwrite.starterkit.data.models.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.BufferedReader
-import java.net.HttpURLConnection
-import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -26,8 +25,8 @@ class AppwriteRepository private constructor(context: Context) {
 
     // Appwrite Client and Services
     private val client = Client(context.applicationContext)
-        .setProject(APPWRITE_PROJECT_ID)
-        .setEndpoint(APPWRITE_PUBLIC_ENDPOINT)
+        .setProject(AppwriteConfig.APPWRITE_PROJECT_ID)
+        .setEndpoint(AppwriteConfig.APPWRITE_PUBLIC_ENDPOINT)
 
     private val account: Account = Account(client)
     private val databases: Databases = Databases(client)
@@ -38,44 +37,27 @@ class AppwriteRepository private constructor(context: Context) {
      *
      * @return [Log] A log object containing details of the request and response.
      */
-    suspend fun fetchPingLog(): Log = withContext(Dispatchers.IO) {
-        val url = URL("${client.endpoint}$PING_PATH")
-        val connection = (url.openConnection() as HttpURLConnection).apply {
-            requestMethod = "GET"
+    suspend fun fetchPingLog(): Log {
+        val date = getCurrentDate()
 
-            readTimeout = DEFAULT_TIMEOUT
-            connectTimeout = DEFAULT_TIMEOUT
-
-            setRequestProperty("Content-Type", "application/json")
-            setRequestProperty("x-appwrite-response-format", APPWRITE_VERSION)
-            setRequestProperty("x-appwrite-project", APPWRITE_PROJECT_ID)
-        }
-
-        try {
-            val statusCode = connection.responseCode
-            val response = if (statusCode == HttpURLConnection.HTTP_OK) {
-                connection.inputStream.bufferedReader().use(BufferedReader::readText)
-            } else {
-                "Request failed with status code $statusCode"
-            }
+        return try {
+            val response = withContext(Dispatchers.IO) { client.ping() }
 
             Log(
-                date = getCurrentDate(),
-                status = statusCode.toString(),
+                date = date,
+                status = "200",
                 method = "GET",
-                path = PING_PATH,
+                path = "/ping",
                 response = response
             )
-        } catch (e: Exception) {
+        } catch (exception: AppwriteException) {
             Log(
-                date = getCurrentDate(),
-                status = "Error",
+                date = date,
                 method = "GET",
-                path = PING_PATH,
-                response = "Error occurred: ${e.message}"
+                path = "/ping",
+                status = "${exception.code}",
+                response = "Error occurred: ${exception.message}"
             )
-        } finally {
-            connection.disconnect()
         }
     }
 
@@ -92,36 +74,6 @@ class AppwriteRepository private constructor(context: Context) {
     companion object {
         @Volatile
         private var INSTANCE: AppwriteRepository? = null
-
-        /**
-         * Appwrite Server version.
-         */
-        const val APPWRITE_VERSION = "1.6.0"
-
-        /**
-         * Appwrite project id
-         */
-        const val APPWRITE_PROJECT_ID = "my-project-id"
-
-        /**
-         * Appwrite project name
-         */
-        const val APPWRITE_PROJECT_NAME = "My project"
-
-        /**
-         * Appwrite server endpoint url.
-         */
-        const val APPWRITE_PUBLIC_ENDPOINT = "https://cloud.appwrite.io/v1"
-
-        /**
-         * The path to use for ping.
-         */
-        const val PING_PATH = "/ping"
-
-        /**
-         * Default network timeout.
-         */
-        const val DEFAULT_TIMEOUT = 5_000
 
         /**
          * Singleton factory method to get the instance of AppwriteRepository.

@@ -25,8 +25,8 @@ Alternatively, open the repository URL in `Android Studio` to clone it directly.
 ## 🛠️ Development Guide
 
 1. **Configure Appwrite**  
-   Navigate to `data/repository/AppwriteRepository.kt` and update the values to match your Appwrite
-   project credentials.
+   Navigate to `constants/AppwriteConfig.kt` and update the values to match your Appwrite project
+   credentials.
 
 2. **Customize as Needed**  
    Modify the starter kit to suit your app's requirements. Adjust UI, features, or backend

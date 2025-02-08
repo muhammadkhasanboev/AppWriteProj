@@ -2,14 +2,11 @@ package io.appwrite.starterkit.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import io.appwrite.starterkit.constants.AppwriteConfig
 import io.appwrite.starterkit.data.models.Log
 import io.appwrite.starterkit.data.models.ProjectInfo
 import io.appwrite.starterkit.data.models.Status
 import io.appwrite.starterkit.data.repository.AppwriteRepository
-import io.appwrite.starterkit.data.repository.AppwriteRepository.Companion.APPWRITE_PROJECT_ID
-import io.appwrite.starterkit.data.repository.AppwriteRepository.Companion.APPWRITE_PROJECT_NAME
-import io.appwrite.starterkit.data.repository.AppwriteRepository.Companion.APPWRITE_PUBLIC_ENDPOINT
-import io.appwrite.starterkit.data.repository.AppwriteRepository.Companion.APPWRITE_VERSION
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,10 +33,10 @@ class AppwriteViewModel(application: Application) : AndroidViewModel(application
      */
     fun getProjectInfo(): ProjectInfo {
         return ProjectInfo(
-            version = APPWRITE_VERSION,
-            projectId = APPWRITE_PROJECT_ID,
-            endpoint = APPWRITE_PUBLIC_ENDPOINT,
-            projectName = APPWRITE_PROJECT_NAME
+            version = AppwriteConfig.APPWRITE_VERSION,
+            projectId = AppwriteConfig.APPWRITE_PROJECT_ID,
+            endpoint = AppwriteConfig.APPWRITE_PUBLIC_ENDPOINT,
+            projectName = AppwriteConfig.APPWRITE_PROJECT_NAME
         )
     }
 
