@@ -56,7 +56,7 @@ class AppwriteRepository private constructor(context: Context) {
                 method = "GET",
                 path = "/ping",
                 status = "${exception.code}",
-                response = "Error occurred: ${exception.message}"
+                response = "${exception.message}"
             )
         }
     }
