@@ -127,6 +127,7 @@ private fun AppwriteStarterPreview() {
 
                 ConnectionStatusView(status.value) {
                     // simulate a success ping
+                    //
                     status.value = Status.Loading
                     delay(1000)
                     status.value = Status.Success
