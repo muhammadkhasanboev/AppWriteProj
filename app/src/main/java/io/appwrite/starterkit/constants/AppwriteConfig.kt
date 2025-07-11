@@ -15,7 +15,7 @@ object AppwriteConfig {
     /**
      * Appwrite project id.
      */
-    const val APPWRITE_PROJECT_ID = "my-project-id"
+    const val APPWRITE_PROJECT_ID = "686f662d00384d0a13b9"
 
     /**
      * Appwrite project name.
