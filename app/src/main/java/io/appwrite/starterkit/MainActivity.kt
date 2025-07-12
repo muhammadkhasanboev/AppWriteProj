@@ -1,139 +1,75 @@
 package io.appwrite.starterkit
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RestrictTo
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
-import io.appwrite.starterkit.data.models.Status
-import io.appwrite.starterkit.data.models.mockProjectInfo
-import io.appwrite.starterkit.extensions.copy
-import io.appwrite.starterkit.extensions.edgeToEdgeWithStyle
-import io.appwrite.starterkit.ui.components.CollapsibleBottomSheet
-import io.appwrite.starterkit.ui.components.ConnectionStatusView
-import io.appwrite.starterkit.ui.components.GettingStartedCards
-import io.appwrite.starterkit.ui.components.TopPlatformView
-import io.appwrite.starterkit.ui.components.addCheckeredBackground
-import io.appwrite.starterkit.ui.theme.AppwriteStarterKitTheme
-import io.appwrite.starterkit.viewmodels.AppwriteViewModel
-import kotlinx.coroutines.delay
+import io.appwrite.Client
+import io.appwrite.exceptions.AppwriteException
+import io.appwrite.services.Account
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-/**
- * MainActivity serves as the entry point for the application.
- * It configures the system's edge-to-edge settings, splash screen, and initializes the composable layout.
- */
 class MainActivity : ComponentActivity() {
+
+    private lateinit var account: Account
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        edgeToEdgeWithStyle()
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        // 🔗 Recreate Appwrite client (needed here too)
+        val client = Client(this)
+            .setEndpoint("https://fra.cloud.appwrite.io/v1")
+            .setProject("686f662d00384d0a13b9")
 
-        setContent { AppwriteStarter()}
-    }
-}
+        account = Account(client)
 
-/**
- * AppwriteStarter is the root composable function that sets up the main UI layout.
- * It manages the logs, status, and project information using the provided [AppwriteViewModel].
- */
-@Composable
-fun AppwriteStarter(
-    viewModel: AppwriteViewModel = viewModel(),
-) {
-    val logs by viewModel.logs.collectAsState()
-    val status by viewModel.status.collectAsState()
-
-    // data doesn't change, so no `remember`.
-    val projectInfo = viewModel.getProjectInfo()
-
-    AppwriteStarterKitTheme {
-        Scaffold(bottomBar = {
-            CollapsibleBottomSheet(
-                logs = logs,
-                projectInfo = projectInfo
-            )
-        }) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .addCheckeredBackground()
-                    .padding(innerPadding.copy(top = 16.dp, bottom = 0.dp))
-                    .windowInsetsPadding(WindowInsets.systemBars)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                TopPlatformView(
-                    status = status
-                )
-
-                ConnectionStatusView(status) {
-                    viewModel.ping()
-                }
-
-                GettingStartedCards()
+        setContent {
+            Surface(color = MaterialTheme.colorScheme.background) {
+                HelloWithLogout(account = account, onLogout = {
+                    // 🚪 Redirect to LoginActivity and clear back stack
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                })
             }
         }
     }
 }
 
-@Preview
 @Composable
-@RestrictTo(RestrictTo.Scope.TESTS)
-private fun AppwriteStarterPreview() {
-    val status = remember { mutableStateOf<Status>(Status.Idle) }
+fun HelloWithLogout(account: Account, onLogout: () -> Unit) {
+    val coroutineScope = rememberCoroutineScope()
 
-    AppwriteStarterKitTheme {
-        Scaffold(bottomBar = {
-            CollapsibleBottomSheet(
-                logs = emptyList(),
-                projectInfo = mockProjectInfo
-            )
-        }) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .addCheckeredBackground()
-                    .padding(innerPadding.copy(top = 16.dp, bottom = 0.dp))
-                    .windowInsetsPadding(WindowInsets.systemBars)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                TopPlatformView(
-                    status = status.value
-                )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = "Hello")
 
-                ConnectionStatusView(status.value) {
-                    // simulate a success ping
-                    //
-                    status.value = Status.Loading
-                    delay(1000)
-                    status.value = Status.Success
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(onClick = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    try {
+                        account.deleteSession("current")
+                        onLogout()
+                    } catch (e: AppwriteException) {
+                        // Optionally show error
+                    }
                 }
-
-                GettingStartedCards()
+            }) {
+                Text("Logout")
             }
         }
     }

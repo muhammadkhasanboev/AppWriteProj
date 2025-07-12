@@ -1,5 +1,6 @@
 package io.appwrite.starterkit
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -18,12 +19,31 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 🔗 Initialize Appwrite client
         val client = Client(this)
             .setEndpoint("https://fra.cloud.appwrite.io/v1")
             .setProject("686f662d00384d0a13b9")
 
         account = Account(client)
 
+        // ✅ Step 1: Check session BEFORE showing login/signup
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                account.get()  // Will throw if no session
+                // Session exists → go directly to MainActivity
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                finish()
+            } catch (e: AppwriteException) {
+                // No session → Show AuthScreen UI
+                runOnUiThread {
+                    showAuthScreen()
+                }
+            }
+        }
+    }
+
+    // ✅ Step 2: Show login/signup UI
+    private fun showAuthScreen() {
         setContent {
             AuthScreen(
                 onLogin = { email, password ->
@@ -32,7 +52,9 @@ class LoginActivity : ComponentActivity() {
                             account.createEmailPasswordSession(email, password)
                             runOnUiThread {
                                 Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
-                                // TODO: Navigate to main screen
+                                // 🔁 Go to MainActivity after successful login
+                                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                                finish()
                             }
                         } catch (e: AppwriteException) {
                             runOnUiThread {
