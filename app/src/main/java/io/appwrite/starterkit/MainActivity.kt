@@ -4,16 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.appwrite.Client
 import io.appwrite.exceptions.AppwriteException
 import io.appwrite.services.Account
-import kotlinx.coroutines.CoroutineScope
+import io.appwrite.starterkit.data.models.Category
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -24,7 +27,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 🔗 Recreate Appwrite client (needed here too)
+        // ✅ Setup Appwrite client
         val client = Client(this)
             .setEndpoint("https://fra.cloud.appwrite.io/v1")
             .setProject("686f662d00384d0a13b9")
@@ -32,44 +35,95 @@ class MainActivity : ComponentActivity() {
         account = Account(client)
 
         setContent {
-            Surface(color = MaterialTheme.colorScheme.background) {
-                HelloWithLogout(account = account, onLogout = {
-                    // 🚪 Redirect to LoginActivity and clear back stack
-                    val intent = Intent(this, LoginActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                })
+            MaterialTheme {
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    MainScreen(account = account) {
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(intent)
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun HelloWithLogout(account: Account, onLogout: () -> Unit) {
+fun MainScreen(account: Account, onLogout: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
-    Box(
+    // 🔹 Dummy categories list
+    val categories = remember {
+        listOf(
+            Category(1, "Science"),
+            Category(2, "History"),
+            Category(3, "Technology"),
+        )
+    }
+
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Hello")
+        Text(text = "Hello", style = MaterialTheme.typography.headlineSmall)
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Button(onClick = {
-                coroutineScope.launch(Dispatchers.IO) {
-                    try {
-                        account.deleteSession("current")
-                        onLogout()
-                    } catch (e: AppwriteException) {
-                        // Optionally show error
-                    }
+        // 🧩 Dropdown Spinner
+        CategoryDropdown(
+            categories = categories,
+            selected = selectedCategory,
+            onSelected = { selectedCategory = it }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 🔓 Logout Button
+        Button(onClick = {
+            coroutineScope.launch(Dispatchers.IO) {
+                try {
+                    account.deleteSession("current")
+                    onLogout()
+                } catch (e: AppwriteException) {
+                    // Optionally show error
                 }
-            }) {
-                Text("Logout")
+            }
+        }) {
+            Text("Logout")
+        }
+    }
+}
+
+@Composable
+fun CategoryDropdown(
+    categories: List<Category>,
+    selected: Category?,
+    onSelected: (Category) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .clickable { expanded = true }
+            .padding(12.dp)
+    ) {
+        Text(text = selected?.name ?: "Choose Category")
+
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(category.name) },
+                    onClick = {
+                        onSelected(category)
+                        expanded = false
+                    }
+                )
             }
         }
     }
