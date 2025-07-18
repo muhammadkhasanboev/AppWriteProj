@@ -7,8 +7,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,15 +24,7 @@ import io.appwrite.starterkit.data.models.Category
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
-
-
-
 class MainActivity : ComponentActivity() {
-    val MyCustomColor = Color(0xFF8EA17A)
-
-    private lateinit var account: Account
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,7 +33,7 @@ class MainActivity : ComponentActivity() {
             .setEndpoint("https://fra.cloud.appwrite.io/v1")
             .setProject("686f662d00384d0a13b9")
 
-        account = Account(client)
+        val account = Account(client)
 
         setContent {
             MaterialTheme {
@@ -85,62 +81,73 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
     var selectedQuizType by remember { mutableStateOf<Category?>(null) }
     var selectedQuestionCount by remember { mutableStateOf<Category?>(null) }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFC1CBB6)),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(Color(0xFFCADCFC))
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        CategoryDropdown(
-            label = "Choose Category",
-            categories = categories,
-            selected = selectedCategory,
-            onSelected = { selectedCategory = it }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        CategoryDropdown(
-            label = "Choose Difficulty",
-            categories = difficulties,
-            selected = selectedDifficulty,
-            onSelected = { selectedDifficulty = it }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        CategoryDropdown(
-            label = "Choose Quiz Type",
-            categories = quiztype,
-            selected = selectedQuizType,
-            onSelected = { selectedQuizType = it }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        CategoryDropdown(
-            label = "Number of Questions",
-            categories = questionCounts,
-            selected = selectedQuestionCount,
-            onSelected = { selectedQuestionCount = it }
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(onClick = {
-            coroutineScope.launch(Dispatchers.IO) {
-                try {
-                    account.deleteSession("current")
-                    onLogout()
-                } catch (e: AppwriteException) {
-                    // Optionally handle error
+        // Logout Button at Top End
+        Button(
+            onClick = {
+                coroutineScope.launch(Dispatchers.IO) {
+                    try {
+                        account.deleteSession("current")
+                        onLogout()
+                    } catch (e: AppwriteException) {
+                        // Optionally handle error
+                    }
                 }
-            }
-        }) {
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF00246B), // dark blue background
+                contentColor = Color.White // white text
+            )
+        ) {
             Text("Logout")
+        }
+
+        // Main Content (Spinners)
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CategoryDropdown(
+                label = "Choose Category",
+                categories = categories,
+                selected = selectedCategory,
+                onSelected = { selectedCategory = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CategoryDropdown(
+                label = "Choose Difficulty",
+                categories = difficulties,
+                selected = selectedDifficulty,
+                onSelected = { selectedDifficulty = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CategoryDropdown(
+                label = "Choose Quiz Type",
+                categories = quiztype,
+                selected = selectedQuizType,
+                onSelected = { selectedQuizType = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CategoryDropdown(
+                label = "Number of Questions",
+                categories = questionCounts,
+                selected = selectedQuestionCount,
+                onSelected = { selectedQuestionCount = it }
+            )
         }
     }
 }
 
-// Generic Dropdown Composable
 @Composable
 fun CategoryDropdown(
     label: String,
@@ -152,15 +159,24 @@ fun CategoryDropdown(
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .background(Color(0xFF8EA17A))
+            .fillMaxWidth(0.85f)
+            .background(Color(0xFF649DF5), shape = RoundedCornerShape(30.dp))
             .clickable { expanded = true }
-            .padding(12.dp)
+            .padding(horizontal = 12.dp, vertical = 14.dp)
     ) {
-        Text(text = selected?.name ?: label, color=Color.White)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = selected?.name ?: label, color = Color.White)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = Color.White)
+        }
 
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
             categories.forEach { category ->
                 DropdownMenuItem(
                     text = { Text(category.name) },
