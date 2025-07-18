@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ✅ Setup Appwrite client
+        // Setup Appwrite client
         val client = Client(this)
             .setEndpoint("https://fra.cloud.appwrite.io/v1")
             .setProject("686f662d00384d0a13b9")
@@ -52,12 +52,15 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(account: Account, onLogout: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
-    // 🔹 Dummy categories list
+
     val categories = remember {
         listOf(
             Category(1, "Science"),
             Category(2, "History"),
             Category(3, "Technology"),
+            Category(4, "Politics"),
+            Category(5, "Celebrities")
+
         )
     }
 
@@ -73,7 +76,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🧩 Dropdown Spinner
+        // Dropdown Spinner
         CategoryDropdown(
             categories = categories,
             selected = selectedCategory,
@@ -82,7 +85,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🔓 Logout Button
+        // Logout Button
         Button(onClick = {
             coroutineScope.launch(Dispatchers.IO) {
                 try {
