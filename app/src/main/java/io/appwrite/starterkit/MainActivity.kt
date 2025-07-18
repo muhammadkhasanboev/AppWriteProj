@@ -63,6 +63,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
 
         )
     }
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
     val difficulties = remember {
         listOf(
             Category(1, "Easy"),
@@ -70,6 +71,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
             Category(3, "Hard")
         )
     }
+    var selectedDifficulty by remember { mutableStateOf<Category?>(null) }
 
     val quiztype = remember {
         listOf(
@@ -77,8 +79,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
             Category(2,"True/False")
         )
     }
-
-    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    var selectedQuizType by remember { mutableStateOf<Category?>(null) }
 
     Column(
         modifier = Modifier
@@ -98,14 +99,14 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
         DifficultyDropDown(
             difficulties = difficulties,
-            selected = selectedCategory,
-            onSelected = { selectedCategory = it }
+            selected = selectedDifficulty,
+            onSelected = { selectedDifficulty = it }
         )
         Spacer(modifier = Modifier.height(16.dp))
         QuizTypeDropDown(
             quiztype = quiztype,
-            selected = selectedCategory,
-            onSelected = { selectedCategory = it }
+            selected = selectedQuizType,
+            onSelected = { selectedQuizType = it }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -174,7 +175,7 @@ fun DifficultyDropDown(
             .clickable { expanded = true }
             .padding(12.dp)
     ) {
-        Text(text = selected?.name ?: "Choose Quiz type")
+        Text(text = selected?.name ?: "Choose Difficulty")
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             difficulties.forEach { category ->
@@ -207,7 +208,7 @@ fun QuizTypeDropDown(
             .clickable { expanded = true }
             .padding(12.dp)
     ) {
-        Text(text = selected?.name ?: "Choose Difficulty")
+        Text(text = selected?.name ?: "Choose Quiz type")
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             quiztype.forEach { category ->
