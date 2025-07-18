@@ -52,34 +52,33 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(account: Account, onLogout: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
 
+    val categories = listOf(
+        Category(1, "Science"),
+        Category(2, "History"),
+        Category(3, "Technology"),
+        Category(4, "Politics"),
+        Category(5, "Celebrities")
+    )
+    val difficulties = listOf(
+        Category(1, "Easy"),
+        Category(2, "Medium"),
+        Category(3, "Hard")
+    )
+    val quiztype = listOf(
+        Category(1, "Multiple Questions"),
+        Category(2, "True/False")
+    )
+    val questionCounts = listOf(
+        Category(5, "5 Questions"),
+        Category(10, "10 Questions"),
+        Category(15, "15 Questions"),
+        Category(20, "20 Questions")
+    )
 
-    val categories = remember {
-        listOf(
-            Category(1, "Science"),
-            Category(2, "History"),
-            Category(3, "Technology"),
-            Category(4, "Politics"),
-            Category(5, "Celebrities")
-
-        )
-    }
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
-    val difficulties = remember {
-        listOf(
-            Category(1, "Easy"),
-            Category(2, "Medium"),
-            Category(3, "Hard")
-        )
-    }
     var selectedDifficulty by remember { mutableStateOf<Category?>(null) }
-
-    val quiztype = remember {
-        listOf(
-            Category(1,"Multiple Questions"),
-            Category(2,"True/False")
-        )
-    }
     var selectedQuizType by remember { mutableStateOf<Category?>(null) }
+    var selectedQuestionCount by remember { mutableStateOf<Category?>(null) }
 
     Column(
         modifier = Modifier
@@ -87,38 +86,47 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Dropdown Spinner
         CategoryDropdown(
+            label = "Choose Category",
             categories = categories,
             selected = selectedCategory,
             onSelected = { selectedCategory = it }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        DifficultyDropDown(
-            difficulties = difficulties,
+
+        CategoryDropdown(
+            label = "Choose Difficulty",
+            categories = difficulties,
             selected = selectedDifficulty,
             onSelected = { selectedDifficulty = it }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        QuizTypeDropDown(
-            quiztype = quiztype,
+
+        CategoryDropdown(
+            label = "Choose Quiz Type",
+            categories = quiztype,
             selected = selectedQuizType,
             onSelected = { selectedQuizType = it }
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Logout Button
+        CategoryDropdown(
+            label = "Number of Questions",
+            categories = questionCounts,
+            selected = selectedQuestionCount,
+            onSelected = { selectedQuestionCount = it }
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
         Button(onClick = {
             coroutineScope.launch(Dispatchers.IO) {
                 try {
                     account.deleteSession("current")
                     onLogout()
                 } catch (e: AppwriteException) {
-                    // Optionally show error
+                    // Optionally handle error
                 }
             }
         }) {
@@ -126,9 +134,11 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
         }
     }
 }
-// subject
+
+// Generic Dropdown Composable
 @Composable
 fun CategoryDropdown(
+    label: String,
     categories: List<Category>,
     selected: Category?,
     onSelected: (Category) -> Unit
@@ -142,7 +152,7 @@ fun CategoryDropdown(
             .clickable { expanded = true }
             .padding(12.dp)
     ) {
-        Text(text = selected?.name ?: "Choose Category")
+        Text(text = selected?.name ?: label)
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             categories.forEach { category ->
@@ -157,72 +167,3 @@ fun CategoryDropdown(
         }
     }
 }
-
-//difficulty
-@Composable
-fun DifficultyDropDown(
-    difficulties: List<Category>,
-    selected: Category?,
-    onSelected: (Category) -> Unit
-
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.LightGray)
-            .clickable { expanded = true }
-            .padding(12.dp)
-    ) {
-        Text(text = selected?.name ?: "Choose Difficulty")
-
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            difficulties.forEach { category ->
-                DropdownMenuItem(
-                    text = { Text(category.name) },
-                    onClick = {
-                        onSelected(category)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-//quiz type
-@Composable
-fun QuizTypeDropDown(
-    quiztype: List<Category>,
-    selected: Category?,
-    onSelected: (Category) -> Unit
-
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.LightGray)
-            .clickable { expanded = true }
-            .padding(12.dp)
-    ) {
-        Text(text = selected?.name ?: "Choose Quiz type")
-
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            quiztype.forEach { category ->
-                DropdownMenuItem(
-                    text = { Text(category.name) },
-                    onClick = {
-                        onSelected(category)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-
-
