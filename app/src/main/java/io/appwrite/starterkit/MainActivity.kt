@@ -71,6 +71,13 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
         )
     }
 
+    val quiztype = remember {
+        listOf(
+            Category(1,"Multiple Questions"),
+            Category(2,"True/False")
+        )
+    }
+
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
 
     Column(
@@ -91,6 +98,12 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
         DifficultyDropDown(
             difficulties = difficulties,
+            selected = selectedCategory,
+            onSelected = { selectedCategory = it }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        QuizTypeDropDown(
+            quiztype = quiztype,
             selected = selectedCategory,
             onSelected = { selectedCategory = it }
         )
@@ -161,7 +174,7 @@ fun DifficultyDropDown(
             .clickable { expanded = true }
             .padding(12.dp)
     ) {
-        Text(text = selected?.name ?: "Choose Difficulty")
+        Text(text = selected?.name ?: "Choose Quiz type")
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             difficulties.forEach { category ->
@@ -178,5 +191,37 @@ fun DifficultyDropDown(
 }
 
 //quiz type
+@Composable
+fun QuizTypeDropDown(
+    quiztype: List<Category>,
+    selected: Category?,
+    onSelected: (Category) -> Unit
+
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .clickable { expanded = true }
+            .padding(12.dp)
+    ) {
+        Text(text = selected?.name ?: "Choose Difficulty")
+
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            quiztype.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(category.name) },
+                    onClick = {
+                        onSelected(category)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
 
 
