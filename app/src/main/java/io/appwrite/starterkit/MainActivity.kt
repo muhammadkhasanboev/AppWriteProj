@@ -63,6 +63,13 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
 
         )
     }
+    val difficulties = remember {
+        listOf(
+            Category(1, "Easy"),
+            Category(2, "Medium"),
+            Category(3, "Hard")
+        )
+    }
 
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
 
@@ -72,13 +79,18 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Hello", style = MaterialTheme.typography.headlineSmall)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Dropdown Spinner
         CategoryDropdown(
             categories = categories,
+            selected = selectedCategory,
+            onSelected = { selectedCategory = it }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        DifficultyDropDown(
+            difficulties = difficulties,
             selected = selectedCategory,
             onSelected = { selectedCategory = it }
         )
@@ -100,7 +112,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
         }
     }
 }
-
+// subject
 @Composable
 fun CategoryDropdown(
     categories: List<Category>,
@@ -131,3 +143,40 @@ fun CategoryDropdown(
         }
     }
 }
+
+//difficulty
+@Composable
+fun DifficultyDropDown(
+    difficulties: List<Category>,
+    selected: Category?,
+    onSelected: (Category) -> Unit
+
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .clickable { expanded = true }
+            .padding(12.dp)
+    ) {
+        Text(text = selected?.name ?: "Choose Difficulty")
+
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            difficulties.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(category.name) },
+                    onClick = {
+                        onSelected(category)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+//quiz type
+
+
