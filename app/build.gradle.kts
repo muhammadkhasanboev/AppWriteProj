@@ -61,6 +61,10 @@ dependencies {
 
     // compose platform
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
 
     // debug libraries
     debugImplementation(libs.androidx.ui.tooling)
