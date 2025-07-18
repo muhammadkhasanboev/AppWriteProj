@@ -20,7 +20,12 @@ import io.appwrite.starterkit.data.models.Category
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
+
+
+
 class MainActivity : ComponentActivity() {
+    val MyCustomColor = Color(0xFF8EA17A)
 
     private lateinit var account: Account
 
@@ -83,7 +88,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .background(Color(0xFFC1CBB6)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(16.dp))
@@ -148,11 +153,12 @@ fun CategoryDropdown(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.LightGray)
+            .padding(horizontal = 24.dp)
+            .background(Color(0xFF8EA17A))
             .clickable { expanded = true }
             .padding(12.dp)
     ) {
-        Text(text = selected?.name ?: label)
+        Text(text = selected?.name ?: label, color=Color.White)
 
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             categories.forEach { category ->
