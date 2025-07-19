@@ -1,40 +1,38 @@
 package io.appwrite.starterkit.viewmodels
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
-import io.appwrite.starterkit.data.models.Category
-import kotlinx.coroutines.launch
 import io.appwrite.starterkit.RetrofitInstance
+import io.appwrite.starterkit.data.models.QuizResponse
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-class QuizSettingsViewModel : ViewModel() {
-    var categories by mutableStateOf<List<Category>>(emptyList())
-        private set
+class QuizViewModel : ViewModel() {
+    private val _quizResponse = MutableStateFlow<QuizResponse?>(null)
+    val quizResponse: StateFlow<QuizResponse?> = _quizResponse
 
-    var isLoading by mutableStateOf(true)
-        private set
-
-    init {
-        loadCategories()
-    }
-
-    private fun loadCategories() {
+    fun loadQuizQuestions(
+        amount: Int,
+        category: Int?,
+        difficulty: String?,
+        type: String?
+    ) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getCategories()
+                val response = RetrofitInstance.api.getQuizQuestions(
+                    amount = amount,
+                    category = category,
+                    difficulty = difficulty,
+                    type = type
+                )
                 if (response.isSuccessful) {
-                    categories = response.body()?.trivia_categories ?: emptyList()
+                    _quizResponse.value = response.body()
                 } else {
-                    Log.e("QuizSettingsVM", "Failed: ${response.code()}")
+                    println("API error: ${response.code()} - ${response.message()}")
                 }
             } catch (e: Exception) {
-                Log.e("QuizSettingsVM", "Error loading categories", e)
-            } finally {
-                isLoading = false
+                println("Error fetching questions: ${e.localizedMessage}")
             }
         }
     }

@@ -1,10 +1,15 @@
 package io.appwrite.starterkit.data.models
 
 data class QuizResponse(
-    val trivia_categories: List<Category>
+    val response_code: Int,
+    val results: List<Question>
 )
 
-data class Category(
-    val id: Int,
-    val name: String
+data class Question(
+    val category: String,
+    val type: String,
+    val difficulty: String,
+    val question: String,
+    val correct_answer: String,
+    val incorrect_answers: List<String>
 )

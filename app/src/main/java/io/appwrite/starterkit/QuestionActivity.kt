@@ -3,29 +3,31 @@ package io.appwrite.starterkit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-
-import io.appwrite.starterkit.data.models.QuizResponse
+import androidx.lifecycle.ViewModelProvider
+import io.appwrite.starterkit.viewmodels.QuizViewModel
 
 class QuestionActivity : ComponentActivity() {
+
+    private lateinit var viewModel: QuizViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TODO: Get QuizResponse (you can use a static singleton now, until you add Parcelable support)
+        // 👇 Connect your ViewModel
+        viewModel = ViewModelProvider(
+            this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        )[QuizViewModel::class.java]
 
         setContent {
-            MaterialTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-
-                }
-            }
+            // your Jetpack Compose quiz screen...
         }
+
+        // 🔥 Example call (replace with real values)
+        val score = 7
+        val username = "muhammad42"
+        viewModel.storeScore(username, score)
     }
 }
+
 
 
