@@ -1,4 +1,4 @@
-package io.appwrite.starterkit
+package io.appwrite.starterkit //structure of login page: column (login text,
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,6 +27,7 @@ fun AuthScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        //text changes: "Login" or "Sign up" based on isLogin
         Text(
             text = if (isLogin) "Login" else "Sign Up",
             style = MaterialTheme.typography.headlineMedium
@@ -34,6 +35,7 @@ fun AuthScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        //optional name field, when user signs up, user can insert name
         if (!isLogin) {
             OutlinedTextField(
                 value = name,
@@ -43,16 +45,16 @@ fun AuthScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
-
+        //Email text field
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
-
+        //gives space between email and password text fields
         Spacer(modifier = Modifier.height(8.dp))
-
+        //password text field
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },

@@ -24,6 +24,11 @@ import io.appwrite.starterkit.data.models.Category
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+import io.appwrite.starterkit.data.models.QuizResponse
+import io.appwrite.starterkit.RetrofitInstance
+import kotlinx.coroutines.withContext
+
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,6 +149,36 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
                 selected = selectedQuestionCount,
                 onSelected = { selectedQuestionCount = it }
             )
+            //////////////////////////////////////////////////////////////////////
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(onClick = {
+                coroutineScope.launch {
+                    val response = withContext(Dispatchers.IO) {
+                        RetrofitInstance.api.getQuizQuestions(
+                            amount = selectedQuestionCount?.id ?: 10,
+                            category = selectedCategory?.id,
+                            difficulty = selectedDifficulty?.name?.lowercase(),
+                            type = when (selectedQuizType?.name) {
+                                "True/False" -> "boolean"
+                                "Multiple Questions" -> "multiple"
+                                else -> null
+                            }
+                        )
+                    }
+
+                    if (response.isSuccessful) {
+                        val quizResponse: QuizResponse? = response.body()
+                        // TODO: navigate to QuestionActivity and pass quizResponse or store it somewhere
+
+                    } else {
+                        println("API error: ${response.code()} - ${response.message()}")
+                    }
+                }
+            }) {
+                Text("Start Quiz")
+            }
+
         }
     }
 }

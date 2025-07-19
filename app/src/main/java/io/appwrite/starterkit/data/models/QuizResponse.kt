@@ -1,6 +1,6 @@
 package io.appwrite.starterkit.data.models
 
-data class CategoryResponse(
+data class QuizResponse(
     val trivia_categories: List<Category>
 )
 
