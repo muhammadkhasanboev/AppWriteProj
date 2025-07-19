@@ -15,18 +15,24 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.appwrite.Client
 import io.appwrite.exceptions.AppwriteException
 import io.appwrite.services.Account
+import io.appwrite.starterkit.data.models.Category
 import io.appwrite.starterkit.data.models.QuizResponse
-import io.appwrite.starterkit.viewmodels.QuizViewModel
 import io.appwrite.starterkit.RetrofitInstance
-//import io.appwrite.starterkit.ui.data.models.QuizScore
+import io.appwrite.starterkit.viewmodels.QuizSettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class Category(val id: Int, val name: String) : Parcelable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,38 +60,30 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(account: Account, onLogout: () -> Unit) {
+    val viewModel: QuizSettingsViewModel = viewModel()
     val coroutineScope = rememberCoroutineScope()
-    val viewModel: QuizViewModel = viewModel()
-
-    val categories = listOf(
-        DropdownItem(9, "General Knowledge"),
-        DropdownItem(10, "Books"),
-        DropdownItem(11, "Film"),
-        DropdownItem(12, "Music")
-    )
+    val context = LocalContext.current
 
     val difficulties = listOf(
-        DropdownItem(1, "Easy"),
-        DropdownItem(2, "Medium"),
-        DropdownItem(3, "Hard")
+        Category(1, "Easy"),
+        Category(2, "Medium"),
+        Category(3, "Hard")
     )
-
     val quiztype = listOf(
-        DropdownItem(1, "Multiple Questions"),
-        DropdownItem(2, "True/False")
+        Category(1, "Multiple Questions"),
+        Category(2, "True/False")
     )
-
     val questionCounts = listOf(
-        DropdownItem(5, "5 Questions"),
-        DropdownItem(10, "10 Questions"),
-        DropdownItem(15, "15 Questions"),
-        DropdownItem(20, "20 Questions")
+        Category(5, "5 Questions"),
+        Category(10, "10 Questions"),
+        Category(15, "15 Questions"),
+        Category(20, "20 Questions")
     )
 
-    var selectedCategory by remember { mutableStateOf<DropdownItem?>(null) }
-    var selectedDifficulty by remember { mutableStateOf<DropdownItem?>(null) }
-    var selectedQuizType by remember { mutableStateOf<DropdownItem?>(null) }
-    var selectedQuestionCount by remember { mutableStateOf<DropdownItem?>(null) }
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    var selectedDifficulty by remember { mutableStateOf<Category?>(null) }
+    var selectedQuizType by remember { mutableStateOf<Category?>(null) }
+    var selectedQuestionCount by remember { mutableStateOf<Category?>(null) }
 
     Box(
         modifier = Modifier
@@ -98,7 +96,8 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
                     try {
                         account.deleteSession("current")
                         onLogout()
-                    } catch (_: AppwriteException) {
+                    } catch (e: AppwriteException) {
+                        // Handle error
                     }
                 }
             },
@@ -117,16 +116,40 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
             modifier = Modifier.align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CategoryDropdown("Choose Category", categories, selectedCategory) { selectedCategory = it }
+            if (viewModel.isLoading) {
+                CircularProgressIndicator()
+            } else {
+                CategoryDropdown(
+                    label = "Choose Category",
+                    categories = viewModel.categories,
+                    selected = selectedCategory,
+                    onSelected = { selectedCategory = it }
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
 
-            CategoryDropdown("Choose Difficulty", difficulties, selectedDifficulty) { selectedDifficulty = it }
+            CategoryDropdown(
+                label = "Choose Difficulty",
+                categories = difficulties,
+                selected = selectedDifficulty,
+                onSelected = { selectedDifficulty = it }
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
-            CategoryDropdown("Choose Quiz Type", quiztype, selectedQuizType) { selectedQuizType = it }
+            CategoryDropdown(
+                label = "Choose Quiz Type",
+                categories = quiztype,
+                selected = selectedQuizType,
+                onSelected = { selectedQuizType = it }
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
-            CategoryDropdown("Number of Questions", questionCounts, selectedQuestionCount) { selectedQuestionCount = it }
+            CategoryDropdown(
+                label = "Number of Questions",
+                categories = questionCounts,
+                selected = selectedQuestionCount,
+                onSelected = { selectedQuestionCount = it }
+            )
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(onClick = {
@@ -143,10 +166,15 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
                             }
                         )
                     }
+
                     if (response.isSuccessful) {
-                        val quizResponse: QuizResponse? = response.body()
-                        viewModel.setQuiz(quizResponse)
-                        // TODO: Navigate to QuestionActivity
+                        val quizResponse = response.body()
+                        quizResponse?.let {
+                            val intent = Intent(context, QuestionActivity::class.java).apply {
+                                putExtra("QUIZ_RESPONSE", it)
+                            }
+                            context.startActivity(intent)
+                        }
                     } else {
                         println("API error: ${response.code()} - ${response.message()}")
                     }
@@ -161,9 +189,9 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
 @Composable
 fun CategoryDropdown(
     label: String,
-    categories: List<DropdownItem>,
-    selected: DropdownItem?,
-    onSelected: (DropdownItem) -> Unit
+    categories: List<Category>,
+    selected: Category?,
+    onSelected: (Category) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
