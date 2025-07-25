@@ -88,7 +88,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFCADCFC))
+            .background(Color(0xFF022F6A))
     ) {
         Button(
             onClick = {
@@ -105,7 +105,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
                 .align(Alignment.TopEnd)
                 .padding(30.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF00246B),
+                containerColor = Color(0xFF0546AB),
                 contentColor = Color.White
             )
         ) {
@@ -195,10 +195,12 @@ fun CategoryDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
+    val dropdownWidth = 0.85f
+
     Box(
         modifier = Modifier
-            .fillMaxWidth(0.85f)
-            .background(Color(0xFF649DF5), shape = RoundedCornerShape(30.dp))
+            .fillMaxWidth(dropdownWidth)
+            .background(Color(0xFF0546AB), shape = RoundedCornerShape(30.dp))
             .clickable { expanded = true }
             .padding(horizontal = 12.dp, vertical = 14.dp)
     ) {
@@ -213,15 +215,26 @@ fun CategoryDropdown(
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .fillMaxWidth(dropdownWidth) // <- Ensures same width as Box
+                , shape = RoundedCornerShape(30.dp)
         ) {
             categories.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text(category.name) },
+                    text = {
+                        Text(
+                            text = category.name,
+                            color = Color.White // <- White text in dropdown
+                        )
+                    },
                     onClick = {
                         onSelected(category)
                         expanded = false
-                    }
+                    },
+                    modifier = Modifier
+                        .background(Color(0xFF0546AB))
+                        .fillMaxWidth()
                 )
             }
         }
