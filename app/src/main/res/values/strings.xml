@@ -2,12 +2,15 @@
 
     <!-- login page: loginPage.kt-->
     <string name="login_page_welcome_text">Welcome Back!</string>
-    <string name="login">Login</string>
-    <string name="signup">Sign up</string>
+    <string name="login"> Login</string>
+    <string name="signup"> Sign up</string>
     <string name="name">name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="signup_request">Don\'t have an account? Sign up</string>
-    <string name="login_request">Already have an account? Log in</string>
+    <string name="signup_request">Don\'t have an account?\u00A0</string>
+    <string name="login_request">Already have an account?\u00A0</string>
+    <string name="show">Show</string>
+    <string name="hide">Hide</string>
+    <string name="join_us_today">Join us Today!</string>
 
 </resources>

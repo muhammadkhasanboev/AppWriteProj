@@ -55,6 +55,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginPage(
@@ -95,17 +104,6 @@ fun LoginPage(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // ... all your fields inside
-        }
-
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
             //login page image
             Image(
                 painter = painterResource(R.drawable.login),
@@ -114,7 +112,7 @@ fun LoginPage(
             )
             //text : welcome back
             Text(
-                text = stringResource(id = R.string.login_page_welcome_text),
+                text = if(isLogin) stringResource(id = R.string.login_page_welcome_text) else stringResource(R.string.join_us_today),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -143,22 +141,23 @@ fun LoginPage(
             Spacer(modifier = Modifier.height(8.dp))
 
 //password text field
+          var passwordVisible by remember {mutableStateOf(false)}
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = {password = it},
                 label = {
-                    Text(
-                        text = stringResource(id = R.string.password)
-                    )
+                    Text(text = stringResource(id = R.string.password))
                 },
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
-                    TextButton(onClick = { /*TODO*/ })
-                    {
-                        Text("Show")
+                    TextButton(onClick = {passwordVisible = !passwordVisible}) {
+                        Text(
+                            text = if(passwordVisible) stringResource(id = R.string.show)
+                            else stringResource(id = R.string.hide))
                     }
-                },
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -191,10 +190,20 @@ fun LoginPage(
             Spacer(modifier = Modifier.height(12.dp))
 //text with link to navigate login and sign up
             Text(
-                text = if (isLogin) {
-                    stringResource(id = R.string.signup_request)
-                } else {
-                    stringResource(id = R.string.login_request)
+                text = buildAnnotatedString {
+                    val normalText = if (isLogin) stringResource(id = R.string.signup_request) else stringResource(id = R.string.login_request)
+                    val actionText = if (isLogin) stringResource(id = R.string.signup) else stringResource(id = R.string.login)
+
+                    append(normalText)
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color(0xFF0D0D0C),
+                            textDecoration = TextDecoration.Underline,
+                            fontWeight = FontWeight.Medium
+                        )
+                    ) {
+                        append(actionText)
+                    }
                 },
                 color = Color(0xFF0D0D0C),
                 modifier = Modifier.clickable { isLogin = !isLogin }
