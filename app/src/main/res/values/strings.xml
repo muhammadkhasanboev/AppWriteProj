@@ -7,5 +7,7 @@
     <string name="name">name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="signup_request">Don\'t have an account? Sign up</string>
+    <string name="login_request">Already have an account? Log in</string>
 
 </resources>

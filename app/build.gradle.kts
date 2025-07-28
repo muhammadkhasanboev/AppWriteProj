@@ -56,7 +56,6 @@ dependencies {
 
     // ui, preview & material
     implementation(libs.androidx.ui)
-    implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
 
@@ -75,4 +74,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation("androidx.compose.material3:material3:1.2.1")
+
 }

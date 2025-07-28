@@ -10,8 +10,8 @@ import androidx.compose.ui.unit.sp
 
 // Define Light Color Scheme (you can also add Dark theme support later)
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF6650a4),        // Purple40
-    secondary = Color(0xFF625b71),      // PurpleGrey40
+    primary = Color(0xFFF5BA69),        // Purple40
+    secondary = Color(0xFFF5BA69),      // PurpleGrey40
     tertiary = Color(0xFF7D5260),       // Pink40
     background = Color.White,
     surface = Color.White,

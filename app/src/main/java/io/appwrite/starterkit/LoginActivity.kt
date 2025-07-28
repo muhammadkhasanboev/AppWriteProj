@@ -11,6 +11,7 @@ import io.appwrite.services.Account
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import io.appwrite.starterkit.LoginPage
 
 class LoginActivity : ComponentActivity() {
 
@@ -45,7 +46,7 @@ class LoginActivity : ComponentActivity() {
     // ✅ Step 2: Show login/signup UI
     private fun showAuthScreen() {
         setContent {
-            AuthScreen(
+            LoginPage(
                 onLogin = { email, password ->
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
