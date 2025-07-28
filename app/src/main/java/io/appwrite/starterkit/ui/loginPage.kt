@@ -56,6 +56,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -153,9 +155,13 @@ fun LoginPage(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 trailingIcon = {
                     TextButton(onClick = {passwordVisible = !passwordVisible}) {
-                        Text(
-                            text = if(passwordVisible) stringResource(id = R.string.show)
-                            else stringResource(id = R.string.hide))
+                        Image(
+                            painter = painterResource(
+                                id = if (passwordVisible) R.drawable.img else R.drawable.img_1
+                            ),
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
                 }
             )
@@ -230,6 +236,6 @@ fun LoginPage(
 
 /* TODO:
 *   textfields should go up, down based on keyboard size -> done
-*   show button should work
+*   show button should work -> done
 *   add: onDone to the keyboard
 *  */
