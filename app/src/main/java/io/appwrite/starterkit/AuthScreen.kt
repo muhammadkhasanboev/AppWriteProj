@@ -1,4 +1,4 @@
-package io.appwrite.starterkit //structure of login page: column (login text,
+package io.appwrite.starterkit
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -84,6 +85,21 @@ fun AuthScreen(
             text = if (isLogin) "Don't have an account? Sign up" else "Already have an account? Log in",
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable { isLogin = !isLogin }
+        )
+    }
+}
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun PreviewAuthScreen() {
+    MaterialTheme { // Optional: wrap in theme if you have one
+        AuthScreen(
+            onLogin = { email, password ->
+                // You can log or print something here for preview
+                println("Login clicked: $email, $password")
+            },
+            onSignup = { name, email, password ->
+                println("Signup clicked: $name, $email, $password")
+            }
         )
     }
 }

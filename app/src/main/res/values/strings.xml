@@ -1,1 +1,5 @@
-<resources></resources>
+<resources>
+    <string name="login_page_welcome_text">Welcome Back!</string>
+    <string name="login">Login</string>
+    <string name="signup">Sign up</string>
+</resources>

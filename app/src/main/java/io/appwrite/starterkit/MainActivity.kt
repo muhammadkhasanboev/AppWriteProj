@@ -88,7 +88,7 @@ fun MainScreen(account: Account, onLogout: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF022F6A))
+            .background(Color(0xFF020950))
     ) {
         Button(
             onClick = {
@@ -195,14 +195,14 @@ fun CategoryDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    val dropdownWidth = 0.85f
+    val dropdownWidth = 0.70f
 
     Box(
         modifier = Modifier
             .fillMaxWidth(dropdownWidth)
             .background(Color(0xFF0546AB), shape = RoundedCornerShape(30.dp))
             .clickable { expanded = true }
-            .padding(horizontal = 12.dp, vertical = 14.dp)
+            .padding(horizontal = 14.dp, vertical = 14.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -217,8 +217,8 @@ fun CategoryDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .fillMaxWidth(dropdownWidth) // <- Ensures same width as Box
-                , shape = RoundedCornerShape(30.dp)
+                .fillMaxWidth(0.85f) // <- Ensures same width as Box
+                , shape = RoundedCornerShape(10.dp)
         ) {
             categories.forEach { category ->
                 DropdownMenuItem(
