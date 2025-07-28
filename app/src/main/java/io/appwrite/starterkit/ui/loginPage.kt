@@ -36,130 +36,191 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.appwrite.starterkit.R
-import java.nio.file.WatchEvent
 
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginPage(
     onLogin: (String, String) -> Unit,
     onSignup: (String, String, String) -> Unit
-){
+) {
     var isLogin by remember { mutableStateOf(true) }
 
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    Column(
+    val scrollState = rememberScrollState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val view = LocalView.current
+    val configuration = LocalConfiguration.current
+    val density = LocalDensity.current
+    val screenHeightDp = configuration.screenHeightDp.dp
+    val isKeyboardVisible = remember {
+        derivedStateOf {
+            val insets = ViewCompat.getRootWindowInsets(view)
+            val imeVisible = insets?.isVisible(WindowInsetsCompat.Type.ime()) ?: false
+            imeVisible
+        }
+    }
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .imePadding()
     ) {
-        //login page image
-        Image(
-            painter = painterResource(R.drawable.login),
-            contentDescription = "login",
-            modifier = Modifier.size(200.dp)
-        )
-        //text : welcome back
-        Text(
-            text = stringResource(id = R.string.login_page_welcome_text),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(10.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(24.dp)
+                .imePadding()
+                .navigationBarsPadding(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // ... all your fields inside
+        }
+
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            //login page image
+            Image(
+                painter = painterResource(R.drawable.login),
+                contentDescription = "login",
+                modifier = Modifier.size(200.dp)
+            )
+            //text : welcome back
+            Text(
+                text = stringResource(id = R.string.login_page_welcome_text),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(10.dp))
 
 //on sign-up requests for name
-        if (!isLogin) {
+            if (!isLogin) {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(text = stringResource(id = R.string.name)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
             OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text(text=stringResource(id = R.string.name)) },
+                value = email,
+                onValueChange = { email = it },
+                label = {
+                    Text(text = stringResource(id = R.string.email))
+                },
                 modifier = Modifier.fillMaxWidth()
             )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it},
-            label = {
-                Text(text=stringResource(id = R.string.email) )
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
 //password text field
-        OutlinedTextField(
-            value = password,
-            onValueChange = {password = it},
-            label = {
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = {
+                    Text(
+                        text = stringResource(id = R.string.password)
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                trailingIcon = {
+                    TextButton(onClick = { /*TODO*/ })
+                    {
+                        Text("Show")
+                    }
+                },
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+//login/sign up button
+            Button(
+                onClick = {
+                    if (isLogin) {
+                        onLogin(email, password)
+                    } else {
+                        onSignup(name, email, password)
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFF5BA69),
+                    contentColor = Color(0xFF0D0D0C)
+                )
+            ) {
                 Text(
-                    text = stringResource(id = R.string.password)
-                )
-            },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation(),
-            trailingIcon = {
-                TextButton(onClick = { /*TODO*/ })
-                {
-                    Text("Show")
-                }
-            },
-        )
+                    text = if (isLogin) {
+                        stringResource(R.string.login)
+                    } else {
+                        stringResource(R.string.signup)
+                    },
 
-        Spacer(modifier = Modifier.height(16.dp))
+                    )
+            }
 
-        Button(
-            onClick = {
-                if(isLogin){
-                    onLogin(email, password)
-                }else{
-                    onSignup(name, email, password)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFF5BA69),
-                contentColor = Color(0xFF0D0D0C))
-        ){
+            Spacer(modifier = Modifier.height(12.dp))
+//text with link to navigate login and sign up
             Text(
-                text = if(isLogin){ stringResource(R.string.login)}
-                else {stringResource(R.string.signup)},
-
-                )
+                text = if (isLogin) {
+                    stringResource(id = R.string.signup_request)
+                } else {
+                    stringResource(id = R.string.login_request)
+                },
+                color = Color(0xFF0D0D0C),
+                modifier = Modifier.clickable { isLogin = !isLogin }
+            )
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text(
-            text = if(isLogin){stringResource(id = R.string.signup_request)}
-            else{stringResource(id = R.string.login_request)},
-            color = Color(0xFF0D0D0C),
-            modifier = Modifier.clickable { isLogin = !isLogin }
-        )
-
-
-
-
-
     }
 }
 
-@Composable
-@Preview(showSystemUi = true)
-fun LoginPagePreview(){
-    LoginPage(
-        onLogin = { email, password ->
-            // You can log or print something here for preview
-            println("Login clicked: $email, $password")
-        },
-        onSignup = { name, email, password ->
-            println("Signup clicked: $name, $email, $password")
-        }
-    )
-}
+    @Composable
+    @Preview(showSystemUi = true)
+    fun LoginPagePreview() {
+        LoginPage(
+            onLogin = { email, password ->
+                // You can log or print something here for preview
+                println("Login clicked: $email, $password")
+            },
+            onSignup = { name, email, password ->
+                println("Signup clicked: $name, $email, $password")
+            }
+        )
+    }
+
+
+
+/* TODO:
+*   textfields should go up, down based on keyboard size -> done
+*   show button should work
+*   add: onDone to the keyboard
+*  */
