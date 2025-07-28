@@ -1,5 +1,11 @@
 <resources>
+
+    <!-- login page: loginPage.kt-->
     <string name="login_page_welcome_text">Welcome Back!</string>
     <string name="login">Login</string>
     <string name="signup">Sign up</string>
+    <string name="name">name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+
 </resources>
