@@ -43,7 +43,7 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    // ✅ Step 2: Show login/signup UI
+   // login/signup UI
     private fun showAuthScreen() {
         setContent {
             LoginPage(
@@ -53,7 +53,7 @@ class LoginActivity : ComponentActivity() {
                             account.createEmailPasswordSession(email, password)
                             runOnUiThread {
                                 Toast.makeText(this@LoginActivity, "Login successful", Toast.LENGTH_SHORT).show()
-                                // 🔁 Go to MainActivity after successful login
+                                //  Go to MainActivity after successful login
                                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                                 finish()
                             }

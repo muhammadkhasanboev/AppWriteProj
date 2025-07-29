@@ -1,5 +1,6 @@
 package io.appwrite.starterkit
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,7 +23,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +52,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -125,6 +126,19 @@ fun LoginPage(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(text = stringResource(id = R.string.name)) },
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor= Color.Black,
+                        unfocusedTextColor=Color.Black,
+                        disabledTextColor= Color.Black,
+                        errorTextColor= Color.Red,
+                        errorContainerColor= Color.Red,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedIndicatorColor = Color(0xFFF5BA69),
+                        focusedLabelColor = Color(0xFFF5BA69),
+                        errorIndicatorColor = Color.Red,
+                        cursorColor = Color(0xFFF5BA69)
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
@@ -144,6 +158,19 @@ fun LoginPage(
                 label = {
                     Text(text = stringResource(id = R.string.email))
                 },
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor= Color.Black,
+                    unfocusedTextColor=Color.Black,
+                    disabledTextColor= Color.Black,
+                    errorTextColor= Color.Red,
+                    errorContainerColor= Color.Red,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color(0xFFF5BA69),
+                    focusedLabelColor = Color(0xFFF5BA69),
+                    errorIndicatorColor = Color.Red,
+                    cursorColor = Color(0xFFF5BA69)
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
@@ -165,6 +192,19 @@ fun LoginPage(
                 label = {
                     Text(text = stringResource(id = R.string.password))
                 },
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor= Color.Black,
+                    unfocusedTextColor=Color.Black,
+                    disabledTextColor= Color.Black,
+                    errorTextColor= Color.Red,
+                    errorContainerColor= Color.Red,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color(0xFFF5BA69),
+                    focusedLabelColor = Color(0xFFF5BA69),
+                    errorIndicatorColor = Color.Red,
+                    cursorColor = Color(0xFFF5BA69)
+                ),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -180,6 +220,7 @@ fun LoginPage(
                         )
                     }
                 }
+
             )
 
             Spacer(modifier = Modifier.height(16.dp))
