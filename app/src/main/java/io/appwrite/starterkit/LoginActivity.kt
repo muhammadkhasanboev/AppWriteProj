@@ -20,14 +20,14 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 🔗 Initialize Appwrite client
+        // Initialize Appwrite client
         val client = Client(this)
             .setEndpoint("https://fra.cloud.appwrite.io/v1")
             .setProject("686f662d00384d0a13b9")
 
         account = Account(client)
 
-        // ✅ Step 1: Check session BEFORE showing login/signup
+        // Step 1: Check session BEFORE showing login/signup
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 account.get()  // Will throw if no session
