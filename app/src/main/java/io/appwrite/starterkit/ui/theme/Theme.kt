@@ -19,7 +19,8 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = Color.White,
     onTertiary = Color.White,
     onBackground = Color.Black,
-    onSurface = Color.Black
+    onSurface = Color.Black,
+    outline = Color.Blue
 )
 
 // Custom Typography

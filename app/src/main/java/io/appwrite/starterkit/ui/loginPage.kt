@@ -13,30 +13,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.appwrite.starterkit.R
-
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -44,23 +37,26 @@ import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
@@ -74,9 +70,9 @@ fun LoginPage(
 ) {
     var isLogin by remember { mutableStateOf(true) }
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var name by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
     val scrollState = rememberScrollState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val view = LocalView.current
@@ -90,6 +86,8 @@ fun LoginPage(
             imeVisible
         }
     }
+    var passwordVisible by rememberSaveable {mutableStateOf(false)}
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -100,7 +98,7 @@ fun LoginPage(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
-                .padding(24.dp)
+                .padding(15.dp)
                 .imePadding()
                 .navigationBarsPadding(),
             verticalArrangement = Arrangement.Center,
@@ -121,35 +119,53 @@ fun LoginPage(
             Spacer(modifier = Modifier.height(10.dp))
 
 //on sign-up requests for name
+            val focusManagerName = LocalFocusManager.current
             if (!isLogin) {
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
                     label = { Text(text = stringResource(id = R.string.name)) },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManagerName.moveFocus(FocusDirection.Down)
+                        }
+                    )
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
 
+            val focusManagerEmail = LocalFocusManager.current
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 label = {
                     Text(text = stringResource(id = R.string.email))
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManagerEmail.moveFocus(FocusDirection.Down)
+                    }
+                )
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
 //password text field
-          var passwordVisible by remember {mutableStateOf(false)}
+
+            val focusManagerPassword = LocalFocusManager.current
             OutlinedTextField(
                 value = password,
                 onValueChange = {password = it},
                 label = {
                     Text(text = stringResource(id = R.string.password))
                 },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -160,7 +176,7 @@ fun LoginPage(
                                 id = if (passwordVisible) R.drawable.img else R.drawable.img_1
                             ),
                             contentDescription = if (passwordVisible) "Hide password" else "Show password",
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(20.dp),
                         )
                     }
                 }
@@ -205,7 +221,7 @@ fun LoginPage(
                         style = SpanStyle(
                             color = Color(0xFFD78F24),
                             textDecoration = TextDecoration.Underline,
-//                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium
                         )
                     ) {
                         append(actionText)
@@ -231,11 +247,3 @@ fun LoginPage(
             }
         )
     }
-
-
-
-/* TODO:
-*   textfields should go up, down based on keyboard size -> done
-*   show button should work -> done
-*   add: onDone to the keyboard
-*  */
