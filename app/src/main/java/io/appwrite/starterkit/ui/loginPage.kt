@@ -91,7 +91,7 @@ fun LoginPage(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .imePadding()
+            .imePadding() //for dynamic padding according to the screen keyboard
     ) {
 
         Column(
@@ -136,7 +136,7 @@ fun LoginPage(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-
+// email text field
             val focusManagerEmail = LocalFocusManager.current
             OutlinedTextField(
                 value = email,
