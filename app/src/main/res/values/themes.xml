@@ -10,10 +10,7 @@
     <!-- themes.xml -->
     <style name="Theme.MyApp.Splash" parent="Theme.SplashScreen">
         <!-- App icon background -->
-        <item name="android:windowBackground">@color/splash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/splash3</item>
-        <item name="windowSplashScreenAnimationDuration">1000</item>
-        <item name="postSplashScreenTheme">@style/Theme.MyApp</item>
+        <item name="android:windowBackground">@color/splash_background</item>a
     </style>
 
 
