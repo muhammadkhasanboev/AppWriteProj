@@ -80,7 +80,7 @@ dependencies {
     //for splash screen
     implementation ("androidx.core:core-splashscreen:1.0.1")
 //for navigation bar
-    implementation("androidx.navigation:navigation-compose:2.7.5")
+
 
 
 }
