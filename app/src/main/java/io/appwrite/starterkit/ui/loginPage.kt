@@ -92,7 +92,8 @@ fun LoginPage(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .imePadding() //for dynamic padding according to the screen keyboard
+            .imePadding()
+            .background(Color.White)//for dynamic padding according to the screen keyboard
     ) {
 
         Column(
