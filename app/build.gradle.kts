@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.compose.jvmstubs)
 
     // debug libraries
     debugImplementation(libs.androidx.ui.tooling)
@@ -76,5 +77,7 @@ dependencies {
     implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
     implementation(platform("androidx.compose:compose-bom:2024.06.00"))
     implementation("androidx.compose.material3:material3:1.2.1")
+    //for splash screen
+    implementation ("androidx.core:core-splashscreen:1.0.1")
 
 }
