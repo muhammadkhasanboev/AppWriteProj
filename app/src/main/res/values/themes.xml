@@ -10,7 +10,7 @@
     <!-- themes.xml -->
     <style name="Theme.MyApp.Splash" parent="Theme.SplashScreen">
         <!-- App icon background -->
-        <item name="android:windowBackground">@color/splash_background</item>a
+        <item name="android:windowBackground">@color/splash_background</item>
     </style>
 
 
