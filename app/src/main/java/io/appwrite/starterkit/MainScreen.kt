@@ -1,16 +1,10 @@
-package io.appwrite.starterkit
+package io.appwrite.starterkit.io.appwrite.starterkit
 
-import android.graphics.drawable.shapes.OvalShape
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -28,12 +22,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.appwrite.starterkit.R
+import io.appwrite.starterkit.io.appwrite.starterkit.screens.CustomizePage
+import io.appwrite.starterkit.io.appwrite.starterkit.screens.RankingPage
+import io.appwrite.starterkit.io.appwrite.starterkit.screens.SettingsPage
 
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier){
     val navItemList = listOf(
-        NavItem("Customize", iconPainter = painterResource(id = R.drawable.home_24)),
+        NavItem("Home", iconPainter = painterResource(id = R.drawable.home_24)),
         NavItem("Rankings", iconPainter = painterResource(id = R.drawable.rank_24)),
         NavItem("Settings", iconPainter = painterResource(id = R.drawable.settings_24))
     )
@@ -47,7 +45,7 @@ fun MainScreen(modifier: Modifier = Modifier){
                 shape = RoundedCornerShape(percent = 90),
                 tonalElevation = 8.dp,
                 shadowElevation = 10.dp,
-                modifier = Modifier.height(100.dp)
+                modifier = Modifier.height(80.dp)
             ) {
             NavigationBar(
                 containerColor = Color(0xFFF5BA69),
@@ -55,6 +53,7 @@ fun MainScreen(modifier: Modifier = Modifier){
             ) {
                 navItemList.forEachIndexed { index, navItem ->
                     NavigationBarItem(
+                        modifier = modifier.padding(top=10.dp),
                         selected = selectedIndex == index,
                         onClick = { selectedIndex = index},
                         icon ={
@@ -69,9 +68,9 @@ fun MainScreen(modifier: Modifier = Modifier){
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color(0xFFF5BA69),
+                            selectedIconColor = Color.White,
                             selectedTextColor = Color.White,
-                            indicatorColor = Color.White,
+                            indicatorColor = Color(0xFFF5BA69),
                             unselectedIconColor = Color.Black,
                             unselectedTextColor = Color.Black
 
@@ -82,13 +81,17 @@ fun MainScreen(modifier: Modifier = Modifier){
             }
         }
     ) {
-        innerPadding -> ContentScreen(modifier = Modifier.padding(innerPadding))
+        innerPadding -> ContentScreen(modifier = Modifier.padding(innerPadding), selectedIndex)
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier){
-
+fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int){
+    when(selectedIndex){
+        0->CustomizePage()
+        1->RankingPage()
+        2->SettingsPage()
+    }
 }
 @Composable
 @Preview(showSystemUi = true)

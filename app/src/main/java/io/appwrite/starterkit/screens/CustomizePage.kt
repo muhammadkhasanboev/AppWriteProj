@@ -3,6 +3,8 @@ package io.appwrite.starterkit.io.appwrite.starterkit.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.gestures.ScrollableDefaults.flingBehavior
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import io.appwrite.starterkit.R
 
@@ -53,6 +58,7 @@ fun CustomizePage(modifier: Modifier = Modifier){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .padding(top=20.dp)
     ){
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -75,8 +81,10 @@ fun SubjectCard(subject: SubjectItem,
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
             .clickable {onClick(subject) }
-            .background(Color(0xFFE0F7FA))
+            .background(Color(0xFFD1D3D3))
+            .height(150.dp)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
