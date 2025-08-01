@@ -1,10 +1,15 @@
 package io.appwrite.starterkit.io.appwrite.starterkit
 
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -22,14 +27,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import io.appwrite.Client
+import io.appwrite.services.Account
+import io.appwrite.starterkit.LoginActivity
+
 import io.appwrite.starterkit.R
 import io.appwrite.starterkit.io.appwrite.starterkit.screens.CustomizePage
 import io.appwrite.starterkit.io.appwrite.starterkit.screens.RankingPage
 import io.appwrite.starterkit.io.appwrite.starterkit.screens.SettingsPage
 
 
+
 @Composable
-fun MainScreen(modifier: Modifier = Modifier){
+fun MainScreenCompose( modifier: Modifier = Modifier){
     val navItemList = listOf(
         NavItem("Home", iconPainter = painterResource(id = R.drawable.home_24)),
         NavItem("Rankings", iconPainter = painterResource(id = R.drawable.rank_24)),
@@ -88,7 +99,7 @@ fun MainScreen(modifier: Modifier = Modifier){
 @Composable
 fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int){
     when(selectedIndex){
-        0->CustomizePage()
+        0->CustomizePage(navController= rememberNavController())
         1->RankingPage()
         2->SettingsPage()
     }
@@ -96,5 +107,5 @@ fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int){
 @Composable
 @Preview(showSystemUi = true)
 fun mainscreenprev(){
-    MainScreen()
+    MainScreenCompose()
 }

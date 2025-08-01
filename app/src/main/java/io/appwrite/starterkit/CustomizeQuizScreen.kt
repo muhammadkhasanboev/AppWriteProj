@@ -22,6 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.appwrite.starterkit.io.appwrite.starterkit.ui.DifficultySelector
 import io.appwrite.starterkit.io.appwrite.starterkit.ui.QuizTypeSelector
+import kotlinx.serialization.Serializable
+
+@Serializable
+object CustomizeQuizScreen
+
 
 @Composable
 @Preview(showSystemUi = true)

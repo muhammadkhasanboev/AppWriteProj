@@ -29,6 +29,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import io.appwrite.starterkit.R
 
 
@@ -39,7 +41,7 @@ data class SubjectItem(
 
 
 @Composable
-fun CustomizePage(modifier: Modifier = Modifier){
+fun CustomizePage(modifier: Modifier = Modifier, navController: NavController){
    val itemsList = listOf(
        SubjectItem("Math", 1, R.drawable.math),
        SubjectItem("Science & Nature", 2, R.drawable.science),
@@ -58,7 +60,7 @@ fun CustomizePage(modifier: Modifier = Modifier){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top=20.dp)
+            .padding(top=20.dp, bottom = 60.dp )
     ){
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -68,7 +70,9 @@ fun CustomizePage(modifier: Modifier = Modifier){
             userScrollEnabled = true
         ) {
             items(itemsList) { item ->
-                SubjectCard(subject = item, onClick = {})
+                SubjectCard(subject = item, onClick = {
+                    navController.navigate("CustomizeQuizScreen")
+                })
             }
 
         }
@@ -100,7 +104,8 @@ fun SubjectCard(subject: SubjectItem,
 
 @Composable
 @Preview(showSystemUi = true)
-fun customizePagePreview(){
-    CustomizePage()
-
+fun prev(){
+    val navController = rememberNavController()
+    CustomizePage(navController = navController)
 }
+

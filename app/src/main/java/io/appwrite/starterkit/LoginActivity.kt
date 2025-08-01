@@ -99,7 +99,7 @@ class LoginActivity : ComponentActivity() {
 @Composable
 fun StaticSplashScreen(onFinished: () -> Unit) {
     LaunchedEffect(Unit) {
-        delay(1000) // Show splash for 2 seconds
+        delay(1000)
         onFinished()
     }
 
