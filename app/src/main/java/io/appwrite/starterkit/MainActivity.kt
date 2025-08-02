@@ -29,6 +29,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.os.Parcelable
+import android.view.WindowManager
+import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import io.appwrite.starterkit.io.appwrite.starterkit.MainScreenCompose
 import io.appwrite.starterkit.io.appwrite.starterkit.screens.CustomizePage
@@ -40,6 +42,11 @@ data class Category(val id: Int, val name: String) : Parcelable
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
+
 
         val client = Client(this)
             .setEndpoint("https://fra.cloud.appwrite.io/v1")

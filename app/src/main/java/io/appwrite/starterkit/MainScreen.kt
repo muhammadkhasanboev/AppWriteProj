@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -46,9 +47,9 @@ import io.appwrite.starterkit.io.appwrite.starterkit.screens.SettingsPage
 @Composable
 fun MainScreenCompose( modifier: Modifier = Modifier){
     val navItemList = listOf(
-        NavItem("Home", iconPainter = painterResource(id = R.drawable.home_24)),
-        NavItem("Rankings", iconPainter = painterResource(id = R.drawable.rank_24)),
-        NavItem("Settings", iconPainter = painterResource(id = R.drawable.settings_24))
+        NavItem( iconPainter = painterResource(id = R.drawable.home_24)),
+        NavItem( iconPainter = painterResource(id = R.drawable.rank_24)),
+        NavItem( iconPainter = painterResource(id = R.drawable.settings_24))
     )
     var selectedIndex by remember { mutableStateOf(0) }
     Scaffold(
@@ -60,7 +61,7 @@ fun MainScreenCompose( modifier: Modifier = Modifier){
                 shape = RoundedCornerShape(percent = 90),
                 tonalElevation = 8.dp,
                 shadowElevation = 10.dp,
-                modifier = Modifier.height(80.dp)
+                modifier = Modifier.height(80.dp).background(Color.White)
             ) {
             NavigationBar(
                 containerColor = Color(0xFFF5BA69),
@@ -74,12 +75,7 @@ fun MainScreenCompose( modifier: Modifier = Modifier){
                         icon ={
                             Icon(
                                 painter = navItem.iconPainter,
-                                contentDescription = navItem.label
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = navItem.label
+                                contentDescription = null
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(

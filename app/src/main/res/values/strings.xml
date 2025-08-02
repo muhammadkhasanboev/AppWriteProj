@@ -14,4 +14,6 @@
     <string name="hide">Hide</string>
     <string name="join_us_today">Join us Today!</string>
 
+    <string name="example_number_of_questions">e.g:\u00A0 10</string>
+
 </resources>
