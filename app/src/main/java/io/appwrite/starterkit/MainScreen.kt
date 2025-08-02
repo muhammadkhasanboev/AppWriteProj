@@ -27,12 +27,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.appwrite.Client
 import io.appwrite.services.Account
 import io.appwrite.starterkit.LoginActivity
 
 import io.appwrite.starterkit.R
+import io.appwrite.starterkit.io.appwrite.starterkit.constants.Navigator
 import io.appwrite.starterkit.io.appwrite.starterkit.screens.CustomizePage
 import io.appwrite.starterkit.io.appwrite.starterkit.screens.RankingPage
 import io.appwrite.starterkit.io.appwrite.starterkit.screens.SettingsPage
@@ -50,7 +54,7 @@ fun MainScreenCompose( modifier: Modifier = Modifier){
     Scaffold(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 5.dp, end = 5.dp, bottom = 5.dp),
+            .padding(start = 3.dp,end = 3.dp, bottom = 5.dp),
         bottomBar = {
             Surface(
                 shape = RoundedCornerShape(percent = 90),
@@ -97,13 +101,32 @@ fun MainScreenCompose( modifier: Modifier = Modifier){
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int){
-    when(selectedIndex){
-        0->CustomizePage(navController= rememberNavController())
-        1->RankingPage()
-        2->SettingsPage()
+fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int) {
+    when (selectedIndex) {
+        0 -> {
+            val navController = rememberNavController()
+            NavHost(
+                navController = navController,
+                startDestination = "CustomizePage",
+                modifier = modifier
+            ) {
+                composable("CustomizePage") {
+                    CustomizePage(navController = navController)
+                }
+                composable("CustomizeQuizScreen") {
+                    CustomizeQuizScreen()
+                }
+            }
+        }
+        1 -> RankingPage()
+        2 -> SettingsPage()
+        else -> {
+            // defensive fallback so you don't hit unhandled states
+            Text("Unknown tab: $selectedIndex")
+        }
     }
 }
+
 @Composable
 @Preview(showSystemUi = true)
 fun mainscreenprev(){

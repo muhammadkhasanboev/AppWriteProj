@@ -45,8 +45,6 @@ dependencies {
     // appwrite
     implementation(libs.appwrite)
 
-    // splashscreen
-    implementation(libs.androidx.core.splashscreen)
 
     // core, compose and runtime
     implementation(libs.androidx.core.ktx)
@@ -65,7 +63,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.navigation.compose.jvmstubs)
+//    implementation(libs.androidx.navigation.compose.jvmstubs)
 
     // debug libraries
     debugImplementation(libs.androidx.ui.tooling)
@@ -82,6 +80,9 @@ dependencies {
 
 //for navigation bar
 
+    val nav_version = "2.9.3"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 
 
 

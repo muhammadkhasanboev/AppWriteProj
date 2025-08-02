@@ -30,35 +30,37 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.os.Parcelable
 import androidx.navigation.compose.rememberNavController
+import io.appwrite.starterkit.io.appwrite.starterkit.MainScreenCompose
 import io.appwrite.starterkit.io.appwrite.starterkit.screens.CustomizePage
 import kotlinx.parcelize.Parcelize
 
-//@Parcelize
-//data class Category(val id: Int, val name: String) : Parcelable
-//
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        val client = Client(this)
-//            .setEndpoint("https://fra.cloud.appwrite.io/v1")
-//            .setProject("686f662d00384d0a13b9")
-//
-//        val account = Account(client)
-//
-//        setContent {
-//            MaterialTheme {
-//                Surface(color = MaterialTheme.colorScheme.background) {
+@Parcelize
+data class Category(val id: Int, val name: String) : Parcelable
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val client = Client(this)
+            .setEndpoint("https://fra.cloud.appwrite.io/v1")
+            .setProject("686f662d00384d0a13b9")
+
+        val account = Account(client)
+
+        setContent {
+            MaterialTheme {
+                Surface(color = MaterialTheme.colorScheme.background) {
 //                    MainScreen(account = account) {
 //                        val intent = Intent(this, LoginActivity::class.java)
 //                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 //                        startActivity(intent)
 //                    }
-//                }
-//            }
-//        }
-//    }
-//}
+                    MainScreenCompose()
+                }
+            }
+        }
+    }
+}
 //
 //@Composable
 //fun MainScreen(account: Account, onLogout: () -> Unit) {
@@ -246,13 +248,13 @@ import kotlinx.parcelize.Parcelize
 //
 //
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            CustomizePage(modifier = Modifier, navController = rememberNavController())
-        }
-    }
-}
+//class MainActivity : ComponentActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContent {
+//            CustomizePage(modifier = Modifier, navController = rememberNavController())
+//        }
+//    }
+//}
 
 

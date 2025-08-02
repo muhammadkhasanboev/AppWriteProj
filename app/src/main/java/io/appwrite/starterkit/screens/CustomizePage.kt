@@ -60,7 +60,7 @@ fun CustomizePage(modifier: Modifier = Modifier, navController: NavController){
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top=20.dp, bottom = 60.dp )
+            .padding(top=20.dp )
     ){
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
